@@ -20,7 +20,7 @@ executable proxy-mantab
   build-depends:       base >= 4.7 && < 5
                        , scalpel
                        , split
-                       , text
+                       , text  
 
 
 
