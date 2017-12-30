@@ -4,15 +4,23 @@ module Main where
 import Text.HTML.Scalpel
 import Control.Applicative
 import Data.List.Split
+import qualified Data.Text as T
   
-proxies :: IO (Maybe [String])
-proxies = scrapeURL "https://free-proxy-list.net/" (htmls "tr")
-   
+proxiesRawHtml :: IO (Maybe [String])
+proxiesRawHtml = scrapeURL "https://free-proxy-list.net/" (htmls "tr")
+
+mapToProxies :: [String] -> [[String]]
+mapToProxies xs =
+  init $ tail
+       $ map
+         (\x -> splitOn "</td>" x)
+         xs  
+          
 main :: IO ()
 main = do
-  xxs <- proxies
+  xxs <- proxiesRawHtml
   case xxs of
-    Just xs -> putStrLn $ show (splitOn "</td>" (xs !! 1))
+    Just xs -> putStrLn $ show (mapToProxies xs)
       
   return ()
 
