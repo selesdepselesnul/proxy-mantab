@@ -17,7 +17,8 @@ proxiesRawHtml :: IO (Maybe [String])
 proxiesRawHtml = scrapeURL "https://free-proxy-list.net/" $ htmls "tr"
 
 replaceWithBlank :: String -> [String] -> String
-replaceWithBlank x xs = foldl (\acc x -> T.unpack $ T.replace (T.pack x) (T.pack "") (T.pack acc)) x xs
+replaceWithBlank =
+  foldl (\acc x -> T.unpack $ T.replace (T.pack x) (T.pack "") (T.pack acc))
 
 mapToProxies :: [String] -> [Proxy]
 mapToProxies xs =
@@ -40,4 +41,5 @@ main = do
     Just xs -> putStrLn $ show $ mapToProxies xs
       
   return ()
+
 
