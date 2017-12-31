@@ -11,11 +11,17 @@ data Proxy =
          port::String,
          code::String,
          country::String,
-         anonymity::String}
+         anonymity::String,
+         lastChecked::String}
 
 instance Show Proxy where
-  show (Proxy ip port code country anonymity) =
-    ip ++ "\t" ++ port ++ "\t" ++ code ++ "\t" ++ country ++ "\t" ++ anonymity
+  show (Proxy ip port code country anonymity lastChecked) =
+    ip ++ "\t"
+    ++ port ++ "\t"
+    ++ code ++ "\t"
+    ++ country ++ "\t"
+    ++ anonymity ++ "\t"
+    ++ lastChecked
 
 proxiesRawHtml :: IO (Maybe [String])
 proxiesRawHtml = scrapeURL "https://free-proxy-list.net/" $ htmls "tr"
@@ -32,7 +38,8 @@ mapToProxies xs =
                           port=replaceWithBlank (x !! 1) ["<td>"],
                           code=replaceWithBlank (x !! 2) ["<td>"],
                           country=replaceWithBlank (x !! 3) ["<td class=\"hm\">"],
-                          anonymity=replaceWithBlank (x !! 4) ["<td>"]})
+                          anonymity=replaceWithBlank (x !! 4) ["<td>"],
+                          lastChecked=replaceWithBlank (x !! 7) ["<td class=\"hm\">"]})
              $ map
                  (splitOn "</td>") 
                  xs 
@@ -44,7 +51,6 @@ main = do
     Just xs ->
       putStrLn $ concatMap ((++ "\n") . show) $ mapToProxies xs 
     Nothing -> putStrLn "something wrong"  
-
 
 
 
