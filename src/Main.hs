@@ -11,8 +11,12 @@ data Proxy =
          port::String,
          code::String,
          country::String,
-         anonymity::String} deriving (Show)
-  
+         anonymity::String}
+
+instance Show Proxy where
+  show (Proxy ip port code country anonymity) =
+    ip ++ "\t" ++ port ++ "\t" ++ code ++ "\t" ++ country ++ "\t" ++ anonymity
+
 proxiesRawHtml :: IO (Maybe [String])
 proxiesRawHtml = scrapeURL "https://free-proxy-list.net/" $ htmls "tr"
 
@@ -37,7 +41,8 @@ main :: IO ()
 main = do
   xxs <- proxiesRawHtml
   case xxs of
-    Just xs -> putStrLn $ show $ mapToProxies xs
+    Just xs ->
+      putStrLn $ concatMap (\x -> show x ++ "\n") (mapToProxies xs) 
     Nothing -> putStrLn "something wrong"  
 
 
