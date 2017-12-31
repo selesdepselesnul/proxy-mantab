@@ -34,7 +34,7 @@ mapToProxies xs =
                           country=replaceWithBlank (x !! 3) ["<td class=\"hm\">"],
                           anonymity=replaceWithBlank (x !! 4) ["<td>"]})
              $ map
-                 (\x -> splitOn "</td>" x)
+                 (splitOn "</td>") 
                  xs 
            
 main :: IO ()
@@ -42,8 +42,9 @@ main = do
   xxs <- proxiesRawHtml
   case xxs of
     Just xs ->
-      putStrLn $ concatMap (\x -> show x ++ "\n") (mapToProxies xs) 
+      putStrLn $ concatMap ((++ "\n") . show) $ mapToProxies xs 
     Nothing -> putStrLn "something wrong"  
+
 
 
 
