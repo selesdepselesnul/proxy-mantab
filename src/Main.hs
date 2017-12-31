@@ -18,28 +18,27 @@ proxiesRawHtml = scrapeURL "https://free-proxy-list.net/" $ htmls "tr"
 
 replaceWithBlank :: String -> [String] -> String
 replaceWithBlank =
-  foldl (\acc x -> T.unpack $ T.replace (T.pack x) (T.pack "") (T.pack acc))
+  foldl (\acc x -> T.unpack $ T.replace (T.pack x) (T.pack "") $ T.pack acc)
 
 mapToProxies :: [String] -> [Proxy]
 mapToProxies xs =
   init $ tail
-       $ map
-           (\x -> Proxy{ip=replaceWithBlank (x !! 0) ["<tr>", "<td>"],
-                        port=replaceWithBlank (x !! 1) ["<td>"],
-                        code=replaceWithBlank (x !! 2) ["<td>"],
-                        country=replaceWithBlank (x !! 3) ["<td class=\"hm\">"],
-                        anonymity=replaceWithBlank (x !! 4) ["<td>"]})
-           $ map
-             (\x -> splitOn "</td>" x)
-             xs 
+         $ map
+             (\x -> Proxy{ip=replaceWithBlank (x !! 0) ["<tr>", "<td>"],
+                          port=replaceWithBlank (x !! 1) ["<td>"],
+                          code=replaceWithBlank (x !! 2) ["<td>"],
+                          country=replaceWithBlank (x !! 3) ["<td class=\"hm\">"],
+                          anonymity=replaceWithBlank (x !! 4) ["<td>"]})
+             $ map
+                 (\x -> splitOn "</td>" x)
+                 xs 
            
-          
 main :: IO ()
 main = do
   xxs <- proxiesRawHtml
   case xxs of
     Just xs -> putStrLn $ show $ mapToProxies xs
-      
-  return ()
+    Nothing -> putStrLn "something wrong"  
+
 
 
